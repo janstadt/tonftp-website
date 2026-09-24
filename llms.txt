@@ -1,0 +1,26 @@
+# TONFTP LLC
+
+> TONFTP LLC is an independent software development company. It designs,
+> builds, ships, and operates web applications and native iOS and Android
+> apps, along with the backend services and infrastructure they run on.
+> tonftp.com is owned and operated by TONFTP LLC.
+
+TONFTP LLC works across the full product lifecycle: web front ends and
+server-rendered sites, native mobile apps, APIs and data, Kubernetes/GitOps
+delivery, and App Store / Google Play release management.
+
+## Pages
+
+- [Home](https://www.tonftp.com/): company overview, services (web, native,
+  backend, infrastructure, release), how we work, our own products, and how to
+  get in touch
+
+## Products
+
+- [CabinClarity](https://www.cabinclarity.app/): native iOS/Android and web app
+  for cabin and lake-home buyers — water clarity history, invasive species,
+  fish species, and official agency data
+
+## Contact
+
+- [hello@tonftp.com](mailto:hello@tonftp.com)

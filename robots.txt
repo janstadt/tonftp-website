@@ -1,0 +1,5 @@
+# TONFTP LLC — crawler policy
+User-agent: *
+Allow: /
+
+Sitemap: https://www.tonftp.com/sitemap.xml
