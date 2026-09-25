@@ -18,7 +18,10 @@ document.documentElement.classList.remove("no-js");
   footer.innerHTML =
     '<div class="container footer-inner">' +
     '<div class="footer-brand">' +
-    '<img src="assets/icon.png" alt="" width="24" height="24" /> TON<b>FTP</b>' +
+    // The wordmark MUST stay wrapped in a <span>: .footer-brand is
+    // inline-flex with a gap, and a bare text run + <b> would become two
+    // anonymous flex items, rendering "TON FTP". Keep the span.
+    '<img src="assets/icon.png" alt="" width="24" height="24" /> <span>TON<b>FTP</b></span>' +
     "</div>" +
     '<nav aria-label="Footer">' +
     '<a href="#services">What we do</a>' +
