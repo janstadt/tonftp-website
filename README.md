@@ -35,8 +35,9 @@ tonftp-website/
 ├── style.css           # Design system (navy/cyan palette, see below)
 ├── script.js           # Shared footer + reveal-on-scroll (IntersectionObserver)
 ├── assets/
-│   ├── icon.png        # 512px mark (brand, og:image, apple-touch-icon)
-│   └── favicon.png     # 64px favicon
+│   ├── icon.png        # 512px mark (brand, apple-touch-icon, JSON-LD logo)
+│   ├── favicon.png     # 64px favicon
+│   └── og.png          # 1200x630 Open Graph / Twitter card image
 ├── tools/
 │   └── make-icons.py   # Regenerates assets/*.png (Pillow, deterministic)
 ├── CNAME               # www.tonftp.com — tells GitHub Pages the custom domain
@@ -64,19 +65,55 @@ grid, glassmorphism cards, a bento services grid, a CSS-only code window
 
 Retheme by editing the `:root` variables at the top of `style.css`.
 
-### Regenerating the icons
+### Regenerating the images
 
 ```bash
-python3 tools/make-icons.py   # requires Pillow
+python3 tools/make-icons.py   # requires Pillow → icon.png, favicon.png, og.png
 ```
+
+## SEO
+
+Already in place:
+
+- **Titles & snippets** — 54-char `<title>`, 141-char meta description (both
+  inside Google's display limits), `canonical`, `max-image-preview:large`
+- **Social cards** — Open Graph + Twitter `summary_large_image` with a real
+  1200×630 `og.png` (not a square icon crop) and alt text on every image
+- **Structured data** — one JSON-LD `@graph` with `Organization`
+  (`legalName: TONFTP LLC`, `logo`, `email`, `knowsAbout`, `contactPoint`)
+  linked to a `WebSite` node via `publisher` `@id`, so Google can resolve
+  "TONFTP LLC" as an entity rather than a keyword
+- **Crawlability** — `robots.txt` + `sitemap.xml` + `llms.txt`, one `<h1>`,
+  no heading-level skips, descriptive anchor text, semantic `nav`/`main`/
+  `footer` landmarks
+- **Core Web Vitals** — no external fonts (system stack), no layout images, one
+  stylesheet, ~2 KB of JS, `no-js` fallback so content is never JS-gated
+
+Deliberately **not** claimed: no `sameAs` social profiles, no business address
+or telephone in structured data, and no `LocalBusiness` markup — those require
+facts the LLC has not published. Add them when they exist; inventing them hurts
+more than it helps.
 
 ## Deploying
 
-Automatic: push to `main` → `.github/workflows/website.yml` publishes the repo
-root (no build step).
+Automatic: push to `main` → `.github/workflows/website.yml` stages the site into
+`_site/` and publishes it (no build step). Staging keeps `README.md` and
+`tools/` off the public web root.
 
-**One-time repo setup:** GitHub → Settings → Pages → Build and deployment →
-**Source: GitHub Actions**.
+**Two one-time prerequisites — the build fails without either:**
+
+1. **The repo must be public.** GitHub Pages is unavailable for private repos
+   on the free plan; the Pages API returns `422 Your current plan does not
+   support GitHub Pages for this repository`, which surfaces in Actions as
+   `HttpError: Not Found` from `configure-pages`.
+2. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
+   Equivalent via CLI:
+   ```bash
+   gh api -X POST repos/janstadt/tonftp-website/pages -f build_type=workflow
+   ```
+
+  (Do not bother with `enablement: true` on `configure-pages`: it requires a
+  token other than the default `GITHUB_TOKEN`, so it cannot self-heal.)
 
 Manual trigger: Actions tab → "website" → Run workflow.
 

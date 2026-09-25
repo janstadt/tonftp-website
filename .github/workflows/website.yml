@@ -2,10 +2,13 @@
 # GitHub Pages.
 #
 # Site will be available at: https://www.tonftp.com/
-# GitHub Pages URL: https://<owner>.github.io/tonftp-website/
+# GitHub Pages URL: https://janstadt.github.io/tonftp-website/
 #
-# NOTE: repo Settings → Pages → Build and deployment → Source
-# must be set to "GitHub Actions" (one-time setup).
+# ONE-TIME SETUP (both are required, and both fail the build if missing):
+#   1. Repo must be PUBLIC — GitHub Pages is not available for private repos
+#      on the free plan (the Pages API returns 422 for those).
+#   2. Settings → Pages → Build and deployment → Source: "GitHub Actions".
+#      (Or: gh api -X POST repos/<owner>/<repo>/pages -f build_type=workflow)
 name: website
 
 "on":
@@ -29,17 +32,28 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
-      # Site is plain static files at the repo root — no build step needed.
+      # Publish only the site itself. The repo also contains README.md and
+      # tools/ (icon generator); uploading "." would serve those from the
+      # web root too.
+      - name: Stage site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          cp -v index.html style.css script.js CNAME _site/
+          cp -v robots.txt sitemap.xml llms.txt _site/
+          cp -rv assets _site/
+          test -f _site/index.html
+
       - name: Upload site
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
-          path: .
+          path: _site
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
